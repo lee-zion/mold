@@ -1,6 +1,7 @@
 import sys, os, sqlite3
-from urllib.request import urlopen, Request
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
+from hashlib import sha1
 
 connect = sqlite3.connect("acmipc.db")
 cursor = connect.cursor()
@@ -14,17 +15,16 @@ def main(args):
     found = cursor.fetchone()
     if not found:
         # if id do not exist, read from bs4
-        # headers = { "User-Agent": "Chrome/66.0.3359.181"}
-        headers = { "User-Agent": "Chrome/108.0.5359.125"}
-        req = Request(link, headers=headers)
-        content = BeautifulSoup(urlopen(req), 'html.parser')
+        content = BeautifulSoup(urlopen(link), 'html.parser')
         cursor.execute("INSERT INTO RAW_TABLE VALUES (?, ?)", (id, str(content)))
         connect.commit()
     else:
         (id_found, content_found) = found
         content = BeautifulSoup(content_found, 'html.parser')
     title = " ".join(content.title.getText().split(" ")[1:])
-    print(title)
+    h = sha1()
+    h.update(title.encode('utf-8'))
+    print(h.hexdigest())
 if __name__ == '__main__':
     # main()
     main(sys.argv[1])
