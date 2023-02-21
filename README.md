@@ -1,29 +1,43 @@
 # 작업 디렉토리 생성방법
 
 ```
-./qq 문제번호
-./qq 문제링크
-./sqq 문제번호
-./sqq 문제링크
+./qq 문제번호 프로그래밍언어
+./qq 문제링크 프로그래밍언어
+./sqq 문제번호 프로그래밍언어
+./sqq 문제링크 프로그래밍언어
 ```
 
 ## 예시
 
 ```
-./qq 1008
-./qq https://www.acmicpc.net/problem/1008
-./sqq 1008
-./sqq https://www.acmicpc.net/problem/1008
+./qq 0000
+./qq https://www.acmicpc.net/problem/1000
+
+./qq 1000 py
+./qq 1000 cpp
+./qq 1000 java
+
+./sqq 1000
+./sqq https://www.acmicpc.net/problem/1000
+```
+
+# 기본 프로그래밍언어 수정 방법
+
+- 기본 프로그래밍언어는 `python`으로 되어있음
+- `qq` 파일 수정으로 변경 가능
+  - [qq:L10의 tester](/qq#L10)
+  - [qq:L19의 cp](/qq#L19)
+
+## 예시 (cpp)
+
+```qq
+tester="test.cpp"
+cp .cpp/* "${array[0]}";;
 ```
 
 # 샘플 수정 방법
 
 - `.sample` 디렉토리 내 파일 수정
-
-# STANDARD 문제 구분
-
-- 문제 난이도의 기준이 되는 문제
-- 문제제목 앞에 ★ 추가
 
 # sqq
 

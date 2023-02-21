@@ -7,14 +7,24 @@ mkfile() {
         array+=("$line")
     done < <(python3 ./.qq/get_title.py "$1")
     mkdir -p -- "${array[0]}" &&
-    cp .sample/* "${array[0]}" &&
+    tester="test.py"
+    case "$2" in
+        [Pp]y* )
+        cp .py/* "${array[0]}";tester="test.py";
+        [Jj]a* )
+        cp .java/* "${array[0]}";tester="Test.java";;
+        [Cc]* )
+        cp .cpp/* "${array[0]}";tester="test.cpp";;
+        * )
+        cp .py/* "${array[0]}";;
+    esac
     while read line ; do
         array+=("$line")
     done < <(python3 ./.qq/get_content.py "$1")
     
     # remove input/output path in test.py
-    sed -i "s,problem_title,${array[0]},g" "${array[0]}/"test.py
-    sed -i "s,example_num,${array[1]},g" "${array[0]}/"test.py
+    sed -i "s,problem_title,${array[0]},g" "${array[0]}/"${tester}
+    sed -i "s,example_num,${array[1]},g" "${array[0]}/"${tester}
 }
 
 mkfile "${@}"
