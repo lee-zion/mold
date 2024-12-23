@@ -7,6 +7,18 @@
 ./sqq 문제링크 프로그래밍언어
 ```
 
+## sqq
+
+- 디렉토리 이름이 문제명이 아니라 SHA1 값으로 바뀜
+
+# 설치
+
+```
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
 ## 예시
 
 ```
@@ -39,6 +51,8 @@ cp .cpp/* "${array[0]}";;
 
 - `.sample` 디렉토리 내 파일 수정
 
-# sqq
+# Troubleshoot
 
-- 디렉토리 이름이 문제명이 아니라 SHA1 값으로 바뀜
+## `urllib.error.HTTPError: HTTP Error 403: Forbidden`
+
+- .qq/get_title의 User-Agent를 최신으로 변경
