@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Detect the operating system
+case "$(uname)" in
+    Darwin*)
+        SED=sed
+        SED_OPTS=(-i '' -e)
+        ;;
+    Linux*|CYGWIN*|MINGW*|MSYS*|Windows_NT*)
+        SED=sed
+        SED_OPTS=(-i -e)
+        ;;
+    *)
+        echo "Unsupported OS"
+esac
+
 mkfile() {
     array=()
     printf "%s" ""
@@ -10,21 +24,23 @@ mkfile() {
     tester="test.py"
     case "$2" in
         [Pp]y* )
-        cp .py/* "${array[0]}";tester="test.py";
+        cp .py/* "${array[0]}";tester="test.py";;
         [Jj]a* )
         cp .java/* "${array[0]}";tester="Test.java";;
         [Cc]* )
         cp .cpp/* "${array[0]}";tester="test.cpp";;
         * )
-        cp .py/* "${array[0]}";;
+            cp .py/* "${array[0]}";;
     esac
     while read line ; do
         array+=("$line")
     done < <(python3 ./.qq/get_content.py "$1")
     
     # remove input/output path in test.py
-    sed -i "s,problem_title,${array[0]},g" "${array[0]}/"${tester}
-    sed -i "s,example_num,${array[1]},g" "${array[0]}/"${tester}
+    "$SED" "${SED_OPTS[@]}" "s|problem_title|${array[0]}|g" "${array[0]}/${tester}"
+    "$SED" "${SED_OPTS[@]}" "s|example_num|${array[1]}|g" "${array[0]}/${tester}"
+    # $SED "s|problem_title|${array[0]}|g" "${array[0]}/${tester}"
+    # $SED "s|example_num|${array[1]}|g" "${array[0]}/${tester}"
 }
 
 mkfile "${@}"
