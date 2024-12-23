@@ -1,5 +1,5 @@
 import sys, os, sqlite3
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from hashlib import sha1
 
@@ -15,7 +15,9 @@ def main(args):
     found = cursor.fetchone()
     if not found:
         # if id do not exist, read from bs4
-        content = BeautifulSoup(urlopen(link), 'html.parser')
+        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"}
+        req = Request(link, headers=headers)
+        content = BeautifulSoup(urlopen(req), 'html.parser')
         cursor.execute("INSERT INTO RAW_TABLE VALUES (?, ?)", (id, str(content)))
         connect.commit()
     else:

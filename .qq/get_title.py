@@ -14,8 +14,7 @@ def main(args):
     found = cursor.fetchone()
     if not found:
         # if id do not exist, read from bs4
-        # headers = { "User-Agent": "Chrome/66.0.3359.181"}
-        headers = { "User-Agent": "Chrome/108.0.5359.125"}
+        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"}
         req = Request(link, headers=headers)
         content = BeautifulSoup(urlopen(req), 'html.parser')
         cursor.execute("INSERT INTO RAW_TABLE VALUES (?, ?)", (id, str(content)))
