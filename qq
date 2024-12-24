@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 # Detect the operating system
 case "$(uname)" in
     Darwin*)
@@ -12,35 +15,50 @@ case "$(uname)" in
         ;;
     *)
         echo "Unsupported OS"
+        exit 1
+        ;;
 esac
 
 mkfile() {
     array=()
-    printf "%s" ""
-    while read line ; do
+
+    # Function to strip \r characters
+    strip_cr() {
+        tr -d '\r'
+    }
+
+    # Read and store the title, stripping \r
+    while IFS= read -r line; do
         array+=("$line")
-    done < <(python3 ./.qq/get_title.py "$1")
-    mkdir -p -- "${array[0]}" &&
+    done < <(python3 ./.qq/get_title.py "$1" | strip_cr)
+    mkdir -p -- "${array[0]}" || { echo "Failed to create directory ${array[0]}"; exit 1; }
     tester="test.py"
     case "$2" in
         [Pp]y* )
-        cp .py/* "${array[0]}";tester="test.py";;
+            cp .py/* "${array[0]}"
+            tester="test.py"
+            ;;
         [Jj]a* )
-        cp .java/* "${array[0]}";tester="Test.java";;
+            cp .java/* "${array[0]}"
+            tester="Test.java"
+            ;;
         [Cc]* )
-        cp .cpp/* "${array[0]}";tester="test.cpp";;
+            cp .cpp/* "${array[0]}"
+            tester="test.cpp"
+            ;;
         * )
-            cp .py/* "${array[0]}";;
+            cp .py/* "${array[0]}"
+            ;;
     esac
-    while read line ; do
+
+    # Read and store the content, stripping \r
+    while IFS= read -r line; do
         array+=("$line")
-    done < <(python3 ./.qq/get_content.py "$1")
-    
-    # remove input/output path in test.py
+    done < <(python3 ./.qq/get_content.py "$1" | strip_cr)
+
+    # Replace placeholders in the tester script
     "$SED" "${SED_OPTS[@]}" "s|problem_title|${array[0]}|g" "${array[0]}/${tester}"
     "$SED" "${SED_OPTS[@]}" "s|example_num|${array[1]}|g" "${array[0]}/${tester}"
-    # $SED "s|problem_title|${array[0]}|g" "${array[0]}/${tester}"
-    # $SED "s|example_num|${array[1]}|g" "${array[0]}/${tester}"
 }
 
 mkfile "${@}"
